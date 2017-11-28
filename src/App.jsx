@@ -1,9 +1,36 @@
 import React, {Component} from 'react';
-
+import MessageList from './MessageList.jsx';
+import ChatBar from './ChatBar.jsx';
+const database = {
+  currentUser: {name: "Bob"}, // optional. if currentUser is not defined, it means the user is Anonymous
+  messages: [
+    {
+      id: 1,
+      username: "Bob",
+      content: "Has anyone seen my marbles?",
+    },
+    {
+      id:2,
+      username: "Anonymous",
+      content: "No, I think you lost them. You lost your marbles Bob. You lost them for good."
+    }
+  ]
+}
 class App extends Component {
+
+  constructor(props) {
+    super(props)
+    this.state = database;
+
+  }
   render() {
+    console.log("Rendering <App/>");
     return (
-      <h1>Hello React :)</h1>
+
+     <div>
+      <MessageList messages={ this.state.messages } />
+      <ChatBar currentUser={ this.state.currentUser.name } />
+     </div>
     );
   }
 }
