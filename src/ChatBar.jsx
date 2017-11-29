@@ -15,7 +15,10 @@ onMessageKeyPress(event) {
     //console.log(content);
 if ( event.key === 'Enter'){
 
-this.props.enterSubmit(content);}
+this.props.enterSubmit(content);
+event.target.value = '';
+
+}
 }
 
  render() {
