@@ -3,14 +3,22 @@ import React, {Component} from 'react';
 import Message from './Message.jsx';
 class MessageList extends Component {
   render() {
-    const messages = this.props.messages.map(message => {
+
+    const messages = this.props.messages.map((message) => {
+
+console.log("messagelist " , this.props);
       return <Message
         key={ message.id }
-        user={ message.username }
+        user={ message.username || '' }
         content={ message.content }
+        type={message.type}
          />
-});
-    console.log("Rendering <MessageList />");
+
+
+
+
+    });
+
     return (
 
       <main className="messages">

@@ -1,65 +1,75 @@
 import React, {Component} from 'react';
+import Navbar from './Navbar.jsx';
 import MessageList from './MessageList.jsx'
 import ChatBar from './ChatBar.jsx';
 
-const dataBase = {
-  currentUser: {name: "Bob"}, // optional. if currentUser is not defined, it means the user is Anonymous
-  messages: [
-    {
-      username: "Bob",
-      content: "Has anyone seen my marbles?",
-      id: 1
-    },
-    {
-      username: "Anonymous",
-      content: "No, I think you lost them. You lost your marbles Bob. You lost them for good.",
-      id: 2
-    }
-  ]
-}
-
+//
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state =
-      dataBase;
-      this.enterSubmit = this.enterSubmit.bind(this);
+    this.socket = null;
+    this.state ={
+    currentUser: {name: "rando"},
+    messages: [],
+    count: 0
+
+    }
+  this.changeUserName = this.changeUserName.bind(this);
+  this.enterSubmit = this.enterSubmit.bind(this);
+}
+//
+changeUserName(content){
+  this.setState({ currentUser : {name: content } });
+  let oldName = this.state.currentUser.name;
+  let notification = oldName + ' has change username to ' + content ;
+  if (oldName !== content){
+    let newMessage = {
+      content: notification,
+      type: 'postNotification'
+    }
+  this.socket.send(JSON.stringify(newMessage));
+  }
 
 }
 
+//
 enterSubmit(content) {
-  console.log( "test:", content);
- let key = this.state.messages.length + 1;
-
-
-  const newMessage = {id: key ,username: "Michelle", content: content};
-  const messages = this.state.messages.concat(newMessage)
-  this.setState({messages: messages});
+ let message = {
+    id: '',
+    username: this.state.currentUser.name ,
+    content: content,
+    type: 'postMessage'
+    }
+ this.socket.send(JSON.stringify(message));
 }
 
-
+//
 componentDidMount() {
-  ///console.log("componentDidMount <App />");
-  setTimeout(() => {
-    //console.log("Simulating incoming message");
-    // Add a new message to the list of messages in the data store
-    const newMessage = {id: 3, username: "Michelle", content: "Hello there!"};
-    const messages = this.state.messages.concat(newMessage)
-    // Update the state of the app component.
-    // Calling setState will trigger a call to render() in App and all child components.
-    this.setState({messages: messages})
-  }, 3000);
+  this.socket = new WebSocket('ws://0.0.0.0:3001');
+  this.socket.addEventListener("message", (message) => {
+    let holderObj = JSON.parse(message.data);
+    if (holderObj.type === 'count'){
+      this.state.count = holderObj.countSize;
+      this.setState({count : holderObj.countSize});
+      } else {
+        this.setState({ messages : this.state.messages.concat(holderObj) });
+      }
+  });
 }
 
+//
  render() {
-    //console.log("Rendering <App/>");
-    //console.log(this.state.messages);
     return (
     <div>
-      <MessageList messages = {this.state.messages}/>
-      <ChatBar enterSubmit={this.enterSubmit} currentUser={this.state.currentUser}/>
+     <Navbar count={this.state.count} />
+      <MessageList messages={this.state.messages}/>
+      <ChatBar enterSubmit={this.enterSubmit} currentUser={this.state.currentUser} changeUserName={this.changeUserName } />
     </div>
     );
   }
 }
 export default App;
+
+
+
+

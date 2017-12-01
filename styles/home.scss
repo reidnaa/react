@@ -76,6 +76,13 @@ h1 {
       position: fixed;
       right: 0;
       top: 0;
+
+      .counter{
+        display:inline-block;
+        font-size: 30px;
+        float:right;
+        margin:10px;
+      }
     }
 
     .navbar-brand {
