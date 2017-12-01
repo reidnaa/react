@@ -25,7 +25,6 @@ onMessageKeyPress(event) {
   }
 }
 
-
 render() {
     return (
    <footer className="chatbar">
