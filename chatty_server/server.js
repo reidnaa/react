@@ -3,7 +3,7 @@ const express = require('express');
 const SocketServer = require('ws').Server;
 const WebSocket = require('ws');
 const uuidv1 = require('uuid/v1');
-
+// Set the port to 3001
 const PORT = 3001;
 
 // Create a new express server
@@ -11,6 +11,8 @@ const server = express()
   .use(express.static('public'))
   .listen(PORT, '0.0.0.0', 'localhost', () => console.log(`Listening on ${ PORT }`));
 
+
+// Create the WebSockets server
 const wss = new SocketServer({ server });
 
 wss.broadcast = function broadcast(data) {
@@ -21,11 +23,17 @@ wss.broadcast = function broadcast(data) {
   });
 };
 
+// When a client connects they are assigned a socket, represented by the ws parameter in the callback.
 wss.on('connection', (ws) => {
   console.log('Client connected');
+
+  // uuidv1 makes a hashed user id
   let userId = uuidv1();
+
+
+  //counter for the amount of users online.
   let countSize = wss.clients.size;
-  console.log("COUNT_SIZE ",countSize);
+
   let counter = {
     countSize: countSize,
     type: 'count'
@@ -72,7 +80,7 @@ wss.on('connection', (ws) => {
       countSize: wss.clients.size,
       type: 'count'
     };
-
+//displays the amount of users after they have disconnected.
     wss.broadcast(JSON.stringify(counter));
     let messageObj = {
       id: uuidv1(),
