@@ -28,3 +28,6 @@ Websockets
 
 ## ScreenSHots
 
+![screenshot of message posted](https://github.com/reidnaa/react/blob/master/images/posted-message.png?raw=true)
+
+![screenshot of index page](https://github.com/reidnaa/react/blob/master/images/with-message.png?raw=true)
